@@ -12,11 +12,10 @@ def check_input(args):
     n2 = args.num2
     #M = args.M
 
-    if n1 > 0 and n2 > 0 \
-            and op in opt.__all__:
+    if op in opt.__all__:
         print(f"to compute {n1} {op} {n2} using INT {args.r} ")
     else:
-        print('Invalid input!')
+        print('Invalid operator!')
         sys.exit()
 
 def compute(A,B,r,op):

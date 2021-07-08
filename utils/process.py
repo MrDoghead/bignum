@@ -31,8 +31,8 @@ def split_num(num,r):
     #res = [int(each,2) for each in num_list2]
     return sign, num_list
 
-# big num ->  INT r num list
-# 135 -> [8,7]_4
+# big num ->  INT r-1 num list
+# 135 * -135 -> +,[2,-1],[0,-1],[7,-1]],-,[[2,-1],[0,-1],[7,-1]]
 def pre_process(args):
     num1 = args.num1
     num2 = args.num2
