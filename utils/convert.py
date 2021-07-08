@@ -48,8 +48,8 @@ def conv_int(num,n,r):
     num_list = [0] * n
 
 def dec2bin(n):
-    return bin(n).split('b')[-1]
+    sign = '+' if n >= 0 else '-'
+    bits = bin(n).split('0b')[-1]
+    return sign, bits
 
 
-if __name__ == '__main__':
-    pass

@@ -51,7 +51,7 @@ def main():
     check_input(args)
 
     # pre-process the input
-    A,B = process.pre_process(args)
+    sign1,A,sign2,B = process.pre_process(args)
 
     # compute the results
     r = args.r
@@ -59,7 +59,7 @@ def main():
     C = compute(A,B,r,op)
 
     # post-process the res
-    res = process.post_process(C,r)
+    res = process.post_process(C,r,sign1,sign2)
 
     print('final result base 10:',res)
 

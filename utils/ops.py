@@ -1,3 +1,11 @@
+# define defferent operators
+
+def add(a,b):
+    return a + b
+
+def mul(a,b):
+    return a * b
+
 # x / y = quotient + reminder
 def divmod_sp(x,y,r):
     BASE = y - 1
