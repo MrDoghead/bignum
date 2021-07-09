@@ -2,27 +2,8 @@ import sys
 import time
 from bignum.utils import ops
 
-'''
-# input: a,b,c are list of base r digits
-# output: reversed and updated list C
-def _mul(a,b,c,r):
-    base = 2 ** (r-1)
-    for i in range(len(b)):
-        carry = 0
-        for j in range(len(a)):
-            product = ops.int_mul(a[j][:-1],b[i][:-1])
-            sum1 = ops.add(c[i+j], product)
-            sum2 = ops.add(sum1, carry)
-            uv = sum2
-            u,v = ops.divmod_sp(uv,base,r)
-            c[i+j] = v
-            carry = u
-        c[i+j+1] = u
-    return c
-'''
-
-def _mul(a,b,c,r):
-    base = 2 ** (r-1)
+def _mul(a,b,c,r,ub):
+    base = 2 ** (r-ub)
     carry = 0
     for i in range(len(c)-1):
         tmp = 0
@@ -34,7 +15,7 @@ def _mul(a,b,c,r):
             prod = ops.mul(x1,x2)
             tmp = ops.add(tmp,prod)
         uv = tmp + carry
-        u,v = ops.divmod_sp(uv,base,r-1)
+        u,v = ops.divmod_sp(uv,base,r-ub)
         c[i] = v
         carry = u
     c[i+1] += carry
@@ -47,17 +28,19 @@ def _mul(a,b,c,r):
 #   r base
 # output:
 #   C = [c_n+m+1, ..., c_0]
-def cal(A,B,r):
+def cal(A,B,args):
     A_rev = A[::-1]
     B_rev = B[::-1]
     C_rev = [0] * (len(A) + len(B))
-    base = 2 ** (r-1)
+    r = args.r
+    ub = args.ub
+    base = 2 ** (r - ub)
    
     # main procedure
-    t1 = time.process_time()
-    C_rev = _mul(A_rev,B_rev,C_rev,r)
-    t2 = time.process_time()
-    print('cpu time:',t2-t1)
+    #t1 = time.process_time()
+    C_rev = _mul(A_rev,B_rev,C_rev,r,ub)
+    #t2 = time.process_time()
+    #print('cpu time:',t2-t1)
     C = C_rev[::-1]
 
     print(f'CM res: {C} base {base}')
