@@ -1,20 +1,24 @@
 import sys
 
 class Reporter:
-    def __init__(self,args):
+    def __init__(self,desc,args):
+        self.desc = desc
         self.A = args.num1
-        self.N = args.N
         self.op = args.op
         self.B = args.num2
-        self.M = args.M
         self.r = args.r
+        self.ub = args.ub
         self.recording = dict()
 
-    def create_recording(selfi,name):
-        # [start_time, end_time,duration]
-        self.recording[name] = [0] * 3
+    def create(self,name):
+        self.recording[name] = 0
+
+    def update(self,name,value):
+        self.recording[name] += value
 
     def report(self):
+        print(f'------ {self.desc} ------')
         for name, recording in self.recording.items():
-            print(f'task {anme}: {recording[-1]}s')
+            print(f'operation {name}: {recording} cycles')
+        print('-----------------')
 

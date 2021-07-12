@@ -3,6 +3,7 @@ import opt
 import argparse
 from opt import add,multiply
 from utils import convert, process
+from utils import reporter
 
 
 def check_input(args):
@@ -19,22 +20,24 @@ def check_input(args):
         print("Invalid r or ub!")
         sys.exit()
     else:
-        print(f"to compute {n1} {op} {n2} using INT {args.r} ")
+        print(f"to compute {n1} {op} {n2} using INT {args.r} with unavailable bits {ub}")
 
 def compute(A,B,args):
     op = args.op
     if op == '+':
-        res = add.cal(A,B,args)
+        rep = reporter.Reporter('add',args)
+        res = add.cal(A,B,args,rep)
     elif op == '-':
         print('No service!')
         sys.exit()
     elif op == 'x':
-        res = multiply.cal(A,B,args)
+        rep = reporter.Reporter('mul',args)
+        res,rep = multiply.cal(A,B,args,rep)
     elif op == '/':
         print('No service!')
         sys.exit()
 
-    return res
+    return res,rep
 
 
 def main():
@@ -46,9 +49,6 @@ def main():
     parser.add_argument("-ub", help="the Unavailable Bits in INT r", default=1, type=int)
     args = parser.parse_args()
 
-    # record data
-    #reporter = report.Reporter(args)
-
     # check valid args
     check_input(args)
 
@@ -56,14 +56,17 @@ def main():
     sign1,A,sign2,B = process.pre_process(args)
 
     # compute the results
-    C = compute(A,B,args)
+    C,reporter = compute(A,B,args)
 
     # post-process the res
-    res = process.post_process(C,sign1,sign2,args)
+    result = process.post_process(C,sign1,sign2,args)
 
-    print('final result base 10:',res)
+    print('final result base 10:',result)
+
+    reporter.report()
 
     # check answer
+    print('To check the answer:')
     if args.op == '+':
         print('correct answer is', args.num1 + args.num2)
     elif args.op == '-':
