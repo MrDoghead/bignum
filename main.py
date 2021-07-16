@@ -25,16 +25,18 @@ def check_input(args):
 def compute(A,B,args):
     op = args.op
     if op == '+':
-        rep = reporter.Reporter('add',args)
-        res = add.cal(A,B,args,rep)
+        print('## No implement:',op)
+        sys.exit()
+        #rep = reporter.Reporter('add opts',args)
+        #res = add.cal(A,B,args,rep)
     elif op == '-':
-        print('No service!')
+        print('## No implement:',op)
         sys.exit()
     elif op == 'x':
-        rep = reporter.Reporter('mul',args)
+        rep = reporter.Reporter('mul opts',args)
         res,rep = multiply.cal(A,B,args,rep)
     elif op == '/':
-        print('No service!')
+        print('## No implement:',op)
         sys.exit()
 
     return res,rep
@@ -45,15 +47,16 @@ def main():
     parser.add_argument("num1", help="the first decimal number", type=int)
     parser.add_argument("op", help="specify the operator", type=str)
     parser.add_argument("num2", help="the second decimal number", type=int)
-    parser.add_argument("-r", help="the base is 2^r", default=4, choices=[2,4,6,8], type=int)
-    parser.add_argument("-ub", help="the Unavailable Bits in INT r", default=1, type=int)
+    parser.add_argument("-n", help="the dtype INT n of num1 and num2", default=16, type=int)
+    parser.add_argument("-r", help="the base is 2^r", default=4, choices=[2,4], type=int)
+    parser.add_argument("-ub", help="the Unavailable Bits in INT r", default=0, type=int)
     args = parser.parse_args()
 
     # check valid args
     check_input(args)
 
     # pre-process the input
-    sign1,A,sign2,B = process.pre_process(args)
+    sign1, A, sign2, B = process.pre_process(args)
 
     # compute the results
     C,reporter = compute(A,B,args)
@@ -62,11 +65,10 @@ def main():
     result = process.post_process(C,sign1,sign2,args)
 
     print('final result base 10:',result)
-
     reporter.report()
 
     # check answer
-    print('To check the answer:')
+    print('--- The correct answer: ---')
     if args.op == '+':
         print('correct answer is', args.num1 + args.num2)
     elif args.op == '-':
@@ -80,8 +82,7 @@ def main():
 if __name__=='__main__':
     # we define INT r is base 2^r.
     # examples:
-    # python main.py 1234567 x 7654321 -r 4
-    # python main.py 135 x 135 -r 4 -ub 2
-    # python main.py 12345678 x 87654321 -r 4 -ub 1
-    # python main.py 12345678 x 87654321 -r 2
+    # python main.py 123 x 321 -n 16 -r 4
+    # python main.py 12345 x 54321 -n 16 -r 4 -ub 0
+    # python main.py 1234567 x 7654321 -n 32 -r 4 -ub 1
     main()

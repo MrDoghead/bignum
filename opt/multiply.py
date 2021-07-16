@@ -10,10 +10,10 @@ def _mul(a,b,c,r,ub,rep):
         for j in range(i+1):
             if j >= len(b) or i-j >= len(a):
                 continue
-            x1 = b[j][0]
-            x2 = a[i-j][0]
-            prod = ops.mul(x1,x2)
-            rep.update('mul',7)
+            x1 = b[j]
+            x2 = a[i-j]
+            prod = ops.mul(x1,x2,r,ub)
+            rep.update('mul',1)
             tmp = ops.add(tmp,prod)
             rep.update('add',1)
         uv = ops.add(tmp,carry)

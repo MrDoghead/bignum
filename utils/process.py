@@ -1,57 +1,51 @@
 import sys
 from bignum.utils import convert
 
-# change int to bin
+# convert int to bin
 # split bin into t pieces
-# Note the last bit in INT r is represented as -1 (just a mark)
+# Note the unavailable bits `-ub` in INT `-r` is represented as 0
 # due to the physical uncertainty
-# e.g. int 135 INT 4 ub 1
-# -> [1,0,0,0,0,1,1,1] 
-# -> [['1', '0', '-1'], ['0', '0', '0', '-1'], ['1', '1', '1', '-1']]
-def split_num(num,r,ub):
-    sign, num_bin = convert.dec2bin(num)
-    print(f'{num} binary: {num_bin}')
+# e.g. int 123 INT -r 4 -ub 1
+# -> binary: 0111 1011
+# -> [['0', '0', '1', '0'], ['1', '1', '1', '0'], ['0', '1', '1', '0']]
+def split_num(num,n,r,ub):
+    sign,num_bin = convert.dec2bin(num,n)
+    print(f'INT{n} {num} in binary: {num_bin}')
     num_list = []
-    n = []
+    block = []
     r2 = r - ub
+    l = len(num_bin)
+    pad = num_bin[0]
+    num_bin = pad * (r2 - (l % r2)) + num_bin
     for i in range(len(num_bin)):
         k = len(num_bin) - i - 1
         if i != 0 and i % r2 == 0:
-            n = n[::-1] + ['-1'] * ub
-            num_list.append(n)
-            n = []
-        n.append(num_bin[k])
-    n = n[::-1] + ['-1'] * ub
-    num_list.append(n)
+            block = block[::-1] + [0] * ub
+            num_list.append(block)
+            block = []
+        block.append(int(num_bin[k]))
+    block = block[::-1] + [0] * ub
+    num_list.append(block)
     n_block = len(num_list)
 
     num_list = num_list[::-1]
-    print(f'split it to {n_block} INT {r2} \n {num_list}')
-    return sign, num_list
+    print(f'split it to {n_block} INT{r2} \n {num_list}')
+    return sign,num_list
 
-def _trans(num_list,ub):
-    res = []
-    for each in num_list:
-        bi = ''.join(each[:-ub])
-        res.append([int(bi,2), each[-ub:]])
-    return res
 
 # big num ->  INT r-1 num list
 # 135 * -135 -> +,[2,-1],[0,-1],[7,-1]],-,[[2,-1],[0,-1],[7,-1]]
 def pre_process(args):
+    print('--- Preprocessing: ---')
     num1 = args.num1
     num2 = args.num2
+    n = args.n
     r = args.r
     ub = args.ub
-    sign1, A = split_num(num1,r,ub)
-    sign2, B = split_num(num2,r,ub)
+    sign1,A = split_num(num1,n,r,ub)
+    sign2,B = split_num(num2,n,r,ub)
 
-    # bin to dec
-    A2 = _trans(A,ub)
-    B2 = _trans(B,ub)
-        
-    print(f'after preprocessing: {A2} x {B2}')
-    return sign1, A2, sign2, B2
+    return sign1, A, sign2, B
 
 def post_process(nums,sign1,sign2,args):
     n = len(nums)
@@ -66,14 +60,13 @@ def post_process(nums,sign1,sign2,args):
         res = str(res)
     else:
         res = '-' + str(res)
-
     return res
 
 if __name__=='__main__':
-    A = 135
+    A = 123
     #B = 12345678
     B = 87654321 
-    sign,res = split_num(A,4,2)
+    sign, res = split_num(A,16,4,1)
     print(sign,res)
 
     #C = [0,4,7,3,1]

@@ -19,6 +19,6 @@ class Reporter:
     def report(self):
         print(f'------ {self.desc} ------')
         for name, recording in self.recording.items():
-            print(f'operation {name}: {recording} cycles')
-        print('-----------------')
+            print(f'operation {name}: {recording} times')
+        print('----------------------')
 

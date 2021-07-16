@@ -47,9 +47,18 @@ def conv_int(num,n,r):
         sys.exit()
     num_list = [0] * n
 
-def dec2bin(n):
-    sign = '+' if n >= 0 else '-'
-    bits = bin(n).split('0b')[-1]
+def dec2bin(num,n):
+    sign = '-' if num < 0 else '+'
+    bits = bin(num).split('0b')[-1]
+    if len(bits) >= n:
+        print('Overflow!')
+        sys.exit()
+    else:
+        bits = '0' * (n-len(bits)) + bits
     return sign, bits
+
+if __name__ == '__main__':
+    s, res = dec2bin(12345,16)
+    print(s, res)
 
 
