@@ -1,64 +1,45 @@
 import sys
 
-def check_overflow(num,n,r):
-    upper = 0
-    for i in range(n):
-        upper += r ** i
+def complement(num):
+    # 2's complement
+    tmp = num[0]
+    for i in range(1,len(num)):
+        if num[i] == '0':
+            tmp += '1'
+        elif num[i] == '1':
+            tmp += '0'
+    res = bin(int(tmp,2) + 1)
+    res = res.split('0b')[-1]
+    assert len(res) == len(num)
+    #print(f'convert negative number {num} to its complement {res}')
 
-    return True if num > upper else False
+    return res
 
-def trans_map(cint):
-    if cint < 0:
-        print("invalid")
-        return
-    elif cint < 10:
-        return cint
-
-    elif cint >= 10:
-        return chr(cint - 10 + 65)
-
-# int m to int n
-def transfer(m, n, origin):
-    num = anyToTen(m, origin)
-    target = tenToAny(n, num)
-    print(target)
-
-# int m to int 10
-def anyToTen(m, origin):
-    return int(str(origin), base=m)
-
-# int 10 to int n
-def tenToAny(n, origin):
-    list = []
-    while True:
-        s = origin // n
-        tmp = origin % n
-        list.append(trans_map(tmp))
-        if s == 0:
-            break
-        origin = s
-    list.reverse()
-    list = [str(each) for each in list]
-    print(''.join(list))
-
-def conv_int(num,n,r):
-    if check_overflow(num,n,r):
-        print('overflow happened')
-        sys.exit()
-    num_list = [0] * n
-
+def list2bin(nums,r):
+    res = ''
+    for num in nums:
+        res += dec2bin(num,r)
+    #print('bins:',res)
+    return res
+    
 def dec2bin(num,n):
-    sign = '-' if num < 0 else '+'
     bits = bin(num).split('0b')[-1]
-    if len(bits) >= n:
-        print('Overflow!')
+    if len(bits) > n:
+        print(f'Cannot convert to binary with {n} bits!')
         sys.exit()
+    # padding to INT n
+    # the first bit represents the +/- sign
+    if num >= 0:
+        res = '0' * (n-len(bits)) + bits
     else:
-        bits = '0' * (n-len(bits)) + bits
-    return sign, bits
+        bits = '1' + '0' * (n-len(bits)-1) + bits
+        res = complement(bits)
+
+    return res
 
 if __name__ == '__main__':
-    s, res = dec2bin(12345,16)
-    print(s, res)
+    n1 = dec2bin(12345,16)
+    n2 = dec2bin(-12345,16)
+    print(n1,n2)
 
 

@@ -23,7 +23,8 @@ def _mul(a,b,c,r,ub,rep):
         rep.update('>>',1)
         c[i] = v
         carry = u
-    c[i+1] += carry
+    c[i+1] = ops.add(c[i+1],carry)
+    rep.update('add',1)
     return c, rep
 
 # Multi-precision CM algorithm
@@ -39,7 +40,7 @@ def cal(A,B,args,rep):
     C_rev = [0] * (len(A) + len(B))
     r = args.r
     ub = args.ub
-    base = 2 ** (r - ub)
+    base = 2 ** (r-ub)
 
     # create ops to record
     rep.create('add')
@@ -48,17 +49,12 @@ def cal(A,B,args,rep):
     rep.create('>>')
    
     # main procedure
-    #t1 = time.process_time()
     C_rev, rep = _mul(A_rev,B_rev,C_rev,r,ub,rep)
-    #t2 = time.process_time()
-    #print('cpu time:',t2-t1)
     C = C_rev[::-1]
 
     print(f'CM res: {C} base {base}')
     return C, rep
 
 if __name__=='__main__':
-    a = [[2, '-1'], [0, '-1'], [7, '-1']] # 1000 0111
-    b = [[2, '-1'], [0, '-1'], [7, '-1']] # 1000 0111
     r = 4
     res = cal(a,b,r)

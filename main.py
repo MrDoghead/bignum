@@ -10,17 +10,21 @@ def check_input(args):
     n1 = args.num1
     op = args.op
     n2 = args.num2
+    n = args.n
     r = args.r
     ub = args.ub
+    max_range = 1 << (n-1)
 
     if op not in opt.__all__:
         print('Invalid operator!')
         sys.exit()
-    elif r <= ub:
-        print("Invalid r or ub!")
+    if r <= ub:
+        print("Invalid -r or -ub!")
         sys.exit()
-    else:
-        print(f"to compute {n1} {op} {n2} using INT {args.r} with unavailable bits {ub}")
+    if abs(n1 * n2) >= max_range:
+        print("Overflow!")
+        sys.exit()
+    print(f"to compute INT{n} {n1} {op} {n2} using INT {args.r} with unavailable bits {ub}")
 
 def compute(A,B,args):
     op = args.op
@@ -56,19 +60,18 @@ def main():
     check_input(args)
 
     # pre-process the input
-    sign1, A, sign2, B = process.pre_process(args)
+    A, B = process.pre_process(args)
 
     # compute the results
     C,reporter = compute(A,B,args)
 
     # post-process the res
-    result = process.post_process(C,sign1,sign2,args)
+    result = process.post_process(C,args)
 
     print('final result base 10:',result)
     reporter.report()
 
     # check answer
-    print('--- The correct answer: ---')
     if args.op == '+':
         print('correct answer is', args.num1 + args.num2)
     elif args.op == '-':
@@ -80,9 +83,8 @@ def main():
 
 
 if __name__=='__main__':
-    # we define INT r is base 2^r.
     # examples:
     # python main.py 123 x 321 -n 16 -r 4
-    # python main.py 12345 x 54321 -n 16 -r 4 -ub 0
-    # python main.py 1234567 x 7654321 -n 32 -r 4 -ub 1
+    # python main.py 12345 x 54321 -n 32 -r 4 -ub 0
+    # python main.py 1234567 x 7654321 -n 64 -r 4 -ub 1
     main()
